@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
+## DEPENDENCIES: primer3_core, exonerate, blast (?)
+
 def main():
     print("Yarr! I be Cap'n Primer.")
     # CROSS-SPECIES CDS SEQUENCE EXPLORATION -- "in-species" (e.g. Bdor) and "out-species" (e.g. Dmel)
