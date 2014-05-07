@@ -18,3 +18,10 @@ class Sequence:
             return ""
         return self.bases[start-1:stop]
 
+    def to_boulder_io(self):
+        result = "SEQUENCE_ID="
+        result += self.header + "\n"
+        result += "SEQUENCE_TEMPLATE="
+        result += self.bases + "\n=\n"
+        return result
+    
