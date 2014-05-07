@@ -2,6 +2,14 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
 ## DEPENDENCIES: primer3_core, exonerate, blast (?)
+## data: any number of .fasta files representing in-species sequences (genome, transcriptome, etc.)
+##       out-species genes of interest in nucleotide and protein fasta format
+##       blast results a-plenty
+##       alignment results from exonerate
+##       various config data
+
+## maybe work backwards -- given fasta file of sequences to create primers for, run primer3_core and then blast against reference to verify.
+## then can add in previous exploration steps.
 
 def main():
     print("Yarr! I be Cap'n Primer.")
