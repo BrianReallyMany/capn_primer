@@ -28,5 +28,5 @@ class GFFReader:
                 print("WARNING: Skipping CDS with no mRNA: "+cds[1]['ID'])
                 continue
             
-            self.cds_segment_lengths[cds[1]['Parent']].append(int(cds[0][4]) - int(cds[0][3]))
+            self.cds_segment_lengths[cds[1]['Parent']].append(int(cds[0][4]) - int(cds[0][3]) + 1)
             

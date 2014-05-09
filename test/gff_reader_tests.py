@@ -21,7 +21,7 @@ class TestGFFReader(unittest.TestCase):
 
         self.reader.read(gff)
 
-        expected = {'foo-RA':[41, 50, 60]}
+        expected = {'foo-RA':[42, 51, 61]}
         self.assertEqual(self.reader.cds_segment_lengths, expected)
 
 
