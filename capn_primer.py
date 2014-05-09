@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
+import sys
+from src.dependency_checker import primer3_core_is_installed, blastall_is_installed
+
 ## DEPENDENCIES: primer3_core, blast (?)
 ## data: fasta containing gene_ids and CDS 
 ##       gff for genome from which fasta is pulled
@@ -11,7 +14,9 @@
 
 def main():
     print("Yarr! I be Cap'n Primer.")
-    # FIRST: test dependencies. if no primer3_core or no blastall, can't proceed.
+    print("Ahoy, let's check these scurvy dependencies...")
+
+    check_dependencies()
 
     # GIVEN: LIST OF GENE_IDS TO TARGET
     # GIVEN: FASTA WITH CDS FROM GENES OF INTEREST
@@ -34,6 +39,21 @@ def main():
         # each primer should have only one legit match. if it's got more than one, it's trasssh
 
         
+
+def check_dependencies():
+    # check primer3_core
+    if primer3_core_is_installed():
+        print("Yarr! primer3_core be installed.")
+    else:
+        print("Yarr! Why ye not install primer3_core, scurvy dog.")
+        sys.exit()
+
+    # check blastall
+    if blastall_is_installed():
+        print("Yarr! blastall be installed.")
+    else:
+        print("Yarr! Why ye not install blastall, scurvy dog.")
+        sys.exit()
 
 
 if __name__ == '__main__':
