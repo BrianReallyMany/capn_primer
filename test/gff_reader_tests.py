@@ -14,11 +14,15 @@ class TestGFFReader(unittest.TestCase):
         self.assertEquals(parse_gff_attributes(attr), {"foo":"dog", "baz":"bub"})
 
     def test_read(self):
-        gff = io.BytesIO('seq\tGeibBase\tmRNA\t1\t42\t.\t+\t0\tID=foo-RA')
+        gff = io.BytesIO('seq\tGeibBase\tCDS\t1\t42\t.\t+\t0\tID=foo-RA:CDS1;Parent=foo-RA\n'+\
+        'seq\tGeibBase\tmRNA\t1\t200\t.\t+\t0\tID=foo-RA\n'+\
+        'seq\tGeibBase\tCDS\t50\t100\t.\t+\t0\tID=foo-RA:CDS2;Parent=foo-RA\n'+\
+        'seq\tGeibBase\tCDS\t120\t180\t.\t+\t0\tID=foo-RA:CDS3;Parent=foo-RA\n')
 
         self.reader.read(gff)
 
-        
+        expected = {'foo-RA':[41, 50, 60]}
+        self.assertEqual(self.reader.cds_segment_lengths, expected)
 
 
 ##########################
