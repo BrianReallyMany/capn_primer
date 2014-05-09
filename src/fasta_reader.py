@@ -20,6 +20,7 @@ class FastaReader:
             else:
                 bases += line.strip()
         # Add the last sequence
-        self.seqs.append(Sequence(header, bases))
+        if header:
+            self.seqs.append(Sequence(header, bases))
         return self.seqs
 

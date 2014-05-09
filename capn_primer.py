@@ -5,6 +5,7 @@ import sys
 import os
 from src.dependency_checker import primer3_core_is_installed, blastall_is_installed
 from src.fasta_reader import FastaReader
+from src.gff_reader import GFFReader
 
 ## DEPENDENCIES: primer3_core, blast (?)
 ## data: fasta containing gene_ids and CDS 
@@ -16,6 +17,7 @@ from src.fasta_reader import FastaReader
 
 def main():
     print("Yarr! I be Cap'n Primer.\n")
+    # Check dependencies
     print("Ahoy, let's check these scurvy dependencies...")
     check_dependencies()
 
@@ -30,13 +32,22 @@ def main():
 
     print("Shiver me timbers, the input files be present. Now I'll be reading them...")
 
-    # Read the fastas
+    # Read files
     fasta_reader = FastaReader()
-    target_file = open(target_fasta_path, 'rb')
-    target_seqs = fasta_reader.read(target_file)
-    #sys.stderr.write("Reading fasta...\n")
-    #self.read_fasta(fastapath)
-    #sys.stderr.write("Done.\n")
+    with open(target_fasta_path, 'rb') as target_file:
+        target_seqs = fasta_reader.read(target_file)
+    if not target_seqs:
+        print("Yarr! Error reading target fasta. Walk the plank.")
+        sys.exit()
+
+    gff_reader = GFFReader()
+    with open(gff_path, 'rb') as gff_file:
+        gff_reader.read(gff_file)
+    if not gff_reader.cds_segment_lengths:
+        print("Yarr! Error reading GFF! Walk the plank.")
+        sys.exit()
+
+
     # GIVEN: LIST OF GENE_IDS TO TARGET
     # GIVEN: FASTA WITH CDS FROM GENES OF INTEREST
     # GIVEN: GFF FOR GENOME IN QUESTION
