@@ -21,7 +21,7 @@ class BoulderIOFormatter:
         result += "SEQUENCE_TEMPLATE=" + seq.bases + "\n"
         lengths = self.segment_lengths[seq.header]
         total_length = 0
-        for length in lengths:
+        for length in lengths[:-1]:
             total_length += length
             result += "SEQUENCE_TARGET=" + str(total_length) + ",1\n"
         result += "=\n"

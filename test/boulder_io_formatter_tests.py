@@ -14,8 +14,7 @@ class TestBoulderIOFormatter(unittest.TestCase):
     def test_format_seq(self):
         expected = "SEQUENCE_ID=foo_mrna\n"
         expected += "SEQUENCE_TEMPLATE=GATTACAGATTACA\n"
-        expected += "SEQUENCE_TARGET=5,1\n"
-        expected += "SEQUENCE_TARGET=12,1\n=\n"
+        expected += "SEQUENCE_TARGET=5,1\n=\n"
         actual = self.formatter.format_seq(self.seq1)
         self.assertEquals(actual, expected)
 
