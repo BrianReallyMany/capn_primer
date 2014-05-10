@@ -2,11 +2,13 @@
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 
 import sys
+import subprocess
 import os
 from src.dependency_checker import primer3_core_is_installed, blastall_is_installed
 from src.fasta_reader import FastaReader
 from src.gff_reader import GFFReader
 from src.boulder_io_formatter import BoulderIOFormatter
+from src.boulder_io_reader import BoulderIOReader
 
 ## DEPENDENCIES: primer3_core, blast (?)
 ## input: fasta containing mrna_ids and CDS 
@@ -63,6 +65,16 @@ def main():
             boulderfile.write(boulder_formatter.format_seq(seq))
 
     # Run primer3_core
+    os.system("primer3_core < target_seqs.boulder-io > primers.boulder-io")
+
+    # Convert primers.boulder-io file to primer seqs, then write to fasta
+    boulder_reader = BoulderIOReader()
+    with open("primers.boulder-io", "rb") as primerfile:
+        primer_seqs = boulder_reader.read_primer3_output(primerfile)
+
+    with open("primers.fasta", "wb") as primerfasta:
+        for primer in primer_seqs:
+            primerfasta.write(primer.to_fasta())
 
     # BLAST PRIMER SEQUENCES AGAINST GENOME TO MAKE SURE THEY ONLY AMPLIFY ONE REGION
         # concatenate left primer with reverse complement of right primer

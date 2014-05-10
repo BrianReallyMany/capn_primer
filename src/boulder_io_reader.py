@@ -47,5 +47,13 @@ class BoulderIOReader:
     def read_primer3_output(self, io_buffer):
         seqs = []
         current_entry = ""
+        for line in io_buffer:
+            if line.strip() == "=":
+                # end of an entry
+                seqs.extend(self.entry_to_primer_seqs(current_entry))
+                current_entry = ""
+            else:
+                current_entry += line
+        return seqs
 
 
