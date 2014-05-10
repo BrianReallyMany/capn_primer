@@ -14,6 +14,9 @@ from src.boulder_io_reader import BoulderIOReader
 ## input: fasta containing mrna_ids and CDS 
 ##        gff for genome from which fasta is pulled
 
+# TODO primers should not overlap at all with the primers from the last run. wtf
+# so ... need to pass in a list of forbidden zones to primer3_core, or something.
+
 def main():
     print("Yarr! I be Cap'n Primer.\n")
     # Check dependencies
@@ -63,9 +66,14 @@ def main():
         boulderfile.write(primer3_options)
         for seq in target_seqs:
             boulderfile.write(boulder_formatter.format_seq(seq))
-
+    
     # Run primer3_core
     os.system("primer3_core < target_seqs.boulder-io > primers.boulder-io")
+    
+    # Verify 
+    if file_is_empty("target_seqs.boulder-io"):
+        print("Yarr! Error writing input file for primer3_core! Walk the plank.")
+        sys.exit()
 
     # Convert primers.boulder-io file to primer seqs, then write to fasta
     boulder_reader = BoulderIOReader()
@@ -77,12 +85,10 @@ def main():
             primerfasta.write(primer.to_fasta())
 
     # BLAST PRIMER SEQUENCES AGAINST GENOME TO MAKE SURE THEY ONLY AMPLIFY ONE REGION
-        # concatenate left primer with reverse complement of right primer
-        # make fasta
         # blastall against in-species genome (i guess) 
         # using e-value and alignment length cutoffs, discard matches you don't believe
         # each primer should have only one legit match. if it's got more than one, it's trasssh
-
+        # blastall -p blastn -d 454Scaffolds.fna -i primers_to_blast.fasta -r 1 -q 1 -G 1 -E 2 -W 9 -F "m D" -U -m 9 -b 4 > ../../BLAST_OUTPUT/primers_against_genome.blastout
         
 
 def check_dependencies():
@@ -104,6 +110,9 @@ def verify_path(path):
     if not os.path.isfile(path):
         sys.stderr.write("Failed to find " + path + ". Walk the plank.\n")
         sys.exit()
+
+def file_is_empty(path):
+    return os.stat("file")[6] == 0
 
 if __name__ == '__main__':
     main()
