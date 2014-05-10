@@ -41,4 +41,11 @@ class BoulderIOReader:
                 current_primer += reverse_complement(splitline[1])
                 primer_header = current_header + "_primer_" + number
                 seqs.append(Sequence(primer_header, current_primer))            
+                current_primer = ""
         return seqs
+
+    def read_primer3_output(self, io_buffer):
+        seqs = []
+        current_entry = ""
+
+
