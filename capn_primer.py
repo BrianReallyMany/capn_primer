@@ -6,6 +6,7 @@ import os
 from src.dependency_checker import primer3_core_is_installed, blastall_is_installed
 from src.fasta_reader import FastaReader
 from src.gff_reader import GFFReader
+from src.boulder_io_formatter import BoulderIOFormatter
 
 ## DEPENDENCIES: primer3_core, blast (?)
 ## input: fasta containing mrna_ids and CDS 
