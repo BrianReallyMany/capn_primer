@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from src.sequence import Sequence
+from src.translator import reverse_complement
 
 class Primer:
 
@@ -34,4 +35,16 @@ class Primer:
         result += self.target_sequence.get_subseq(start, stop)
         result += "\n"
         return result
+
+    def right_primer_to_fasta(self):
+        result = self.target_sequence.header + "_"
+        result += self.primer_name + "_"
+        result += "right\n"
+        stop = self.right_start + 1  # confusingly enough; right primer is reversed
+        start = stop - self.right_length + 1
+        subseq = self.target_sequence.get_subseq(start, stop)
+        result += reverse_complement(subseq)
+        result += "\n"
+        return result
+
 

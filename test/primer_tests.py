@@ -17,6 +17,10 @@ class TestPrimer(unittest.TestCase):
         expected = "foo_seq_primer1_left\nTTA\n"
         self.assertEquals(self.primer1.left_primer_to_fasta(), expected)
 
+    def test_right_primer_to_fasta(self):
+        expected = "foo_seq_primer1_right\nGTAA\n"
+        self.assertEquals(self.primer1.right_primer_to_fasta(), expected)
+
 
 ##########################
 def suite():
