@@ -57,5 +57,11 @@ class Primer:
         result += "\n"
         return result
 
+    def to_excluded_region_entry(self):
+        result = "SEQUENCE_EXCLUDED_REGION="
+        result += str(self.left_start) + ","
+        length = self.right_start - self.left_start + 1
+        result += str(length) + "\n"
+        return result
 
 

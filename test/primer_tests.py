@@ -25,6 +25,10 @@ class TestPrimer(unittest.TestCase):
         expected = "foo_seq_primer1_product\nTTACAGATTAC\n"
         self.assertEquals(self.primer1.product_to_fasta(), expected)
 
+    def test_to_excluded_region_entry(self):
+        expected = "SEQUENCE_EXCLUDED_REGION=2,11\n"
+        self.assertEquals(self.primer1.to_excluded_region_entry(), expected)
+
 
 ##########################
 def suite():
