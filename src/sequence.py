@@ -12,6 +12,7 @@ class Sequence:
         return result
 
     def get_subseq(self, start=1, stop=None):
+        """Returns subseq from 1-based index "start" to "stop", inclusive."""
         if not stop:
             stop = len(self.bases)
         if stop > len(self.bases):
