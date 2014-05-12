@@ -47,4 +47,15 @@ class Primer:
         result += "\n"
         return result
 
+    def product_to_fasta(self):
+        result = self.target_sequence.header + "_"
+        result += self.primer_name + "_"
+        result += "product\n"
+        start = self.left_start + 1
+        stop = self.right_start + 1
+        result += self.target_sequence.get_subseq(start, stop)
+        result += "\n"
+        return result
+
+
 
