@@ -71,27 +71,37 @@ def main():
     with open("target_seqs.boulder-io", "wb") as boulderfile:
         # write config data first
         boulderfile.write(primer3_options)
+        exclude_entries = []
         for seq in target_seqs:
-            # TODO go look in exclude list for primers with matching seq header,
-            # if found then call each one's to_excluded_region_entry() and pass this
-            # string to format_seq (?)
-            boulderfile.write(boulder_formatter.format_seq(seq))
+            for primer in primers_to_exclude:
+                if primer.target_sequence.header == seq.header:
+                    exclude_entries.append(primer.to_excluded_region_entry())
+            boulderfile.write(boulder_formatter.format_seq(seq, exclude_entries))
+            exclude_entries[:] = []
     
     # Run primer3_core
     os.system("primer3_core < target_seqs.boulder-io > primers.boulder-io")
     
     # Verify 
-    if file_is_empty("target_seqs.boulder-io"):
-        print("Yarr! Error writing input file for primer3_core! Walk the plank.")
+    if file_is_empty("primers.boulder-io"):
+        print("Yarr! No output from primer3_core! Walk the plank.")
         sys.exit()
     
-    # TODO
     # Convert primers.boulder-io file to left and right primer seqs, then write to fasta
+    with open("primers.boulder-io", "rb") as primersfile:
+        primers = boulder_io_reader.read_primer3_output(primersfile)
+
+    # Verify again, just for fun
+    if not primers:
+        print("Yarr! No primers in the scurvy primers.boulder-io file! Walk the plank.")
+        sys.exit()
 
     # BLAST PRIMER SEQUENCES AGAINST GENOME TO MAKE SURE THEY ONLY AMPLIFY ONE REGION
-        # blastall against in-species genome (i guess) 
-        # using e-value and alignment length cutoffs, discard matches you don't believe
-        # each primer should have only one legit match. if it's got more than one, it's trasssh
+        # blast left primers and right primers
+        # filter hits for each using e-value and alignment length cutoffs
+        # verify that for a given primer, the left and right each map to exactly one common region in the genome
+        # TODO check that it's the right region????
+        # discard primers where the left/right both mapped to 0 or >=2 regions
         # blastall -p blastn -d 454Scaffolds.fna -i primers_to_blast.fasta -r 1 -q 1 -G 1 -E 2 -W 9 -F "m D" -U -m 9 -b 4 > ../../BLAST_OUTPUT/primers_against_genome.blastout
         
 
