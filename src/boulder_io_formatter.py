@@ -10,7 +10,12 @@ class BoulderIOFormatter:
             primer_options = {}
         self.primer3_core_options = primer_options
 
-    def format_seq(self, seq):
+    def format_seq(self, seq, excluded_region_entries=None):
+        """Writes Sequence object to boulder-io format.
+
+        If optional excluded_region_entry argument is passed,
+        appends these entries to the output.
+        """
         if not self.segment_lengths:
             sys.stderr.write("BoulderIOFormatter: attempt to format seq without segment lengths dictionary.\n")
             return ""
@@ -24,6 +29,9 @@ class BoulderIOFormatter:
         for length in lengths[:-1]:
             total_length += length
             result += "SEQUENCE_TARGET=" + str(total_length) + ",1\n"
+        if excluded_region_entries:
+            for entry in excluded_region_entries:
+                result += entry
         result += "=\n"
         return result
         

@@ -46,8 +46,8 @@ def main():
 
     gff_reader = GFFReader()
     with open(gff_path, 'rb') as gff_file:
-        gff_reader.read(gff_file)
-    if not gff_reader.cds_segment_lengths:
+        cds_segment_lengths = gff_reader.read(gff_file)
+    if not cds_segment_lengths:
         print("Yarr! Error reading GFF! Walk the plank.")
         sys.exit()
 
@@ -63,15 +63,18 @@ def main():
             primer3_options += line
 
     print("got " + str(len(target_seqs)) + " target seqs.")
-    print("got " + str(len(gff_reader.cds_segment_lengths)) + " mrnas")
+    print("got " + str(len(cds_segment_lengths)) + " mrnas")
 
     # Prepare input for primer3_core
     boulder_formatter = BoulderIOFormatter()
-    boulder_formatter.segment_lengths = gff_reader.cds_segment_lengths
+    boulder_formatter.segment_lengths = cds_segment_lengths
     with open("target_seqs.boulder-io", "wb") as boulderfile:
         # write config data first
         boulderfile.write(primer3_options)
         for seq in target_seqs:
+            # TODO go look in exclude list for primers with matching seq header,
+            # if found then call each one's to_excluded_region_entry() and pass this
+            # string to format_seq (?)
             boulderfile.write(boulder_formatter.format_seq(seq))
     
     # Run primer3_core
@@ -81,15 +84,9 @@ def main():
     if file_is_empty("target_seqs.boulder-io"):
         print("Yarr! Error writing input file for primer3_core! Walk the plank.")
         sys.exit()
-
-    # Convert primers.boulder-io file to primer seqs, then write to fasta
-    boulder_reader = BoulderIOReader()
-    with open("primers.boulder-io", "rb") as primerfile:
-        primer_seqs = boulder_reader.read_primer3_output(primerfile)
-
-    with open("primers.fasta", "wb") as primerfasta:
-        for primer in primer_seqs:
-            primerfasta.write(primer.to_fasta())
+    
+    # TODO
+    # Convert primers.boulder-io file to left and right primer seqs, then write to fasta
 
     # BLAST PRIMER SEQUENCES AGAINST GENOME TO MAKE SURE THEY ONLY AMPLIFY ONE REGION
         # blastall against in-species genome (i guess) 
