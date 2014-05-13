@@ -29,4 +29,6 @@ class GFFReader:
                 continue
             
             self.cds_segment_lengths[cds[1]['Parent']].append(int(cds[0][4]) - int(cds[0][3]) + 1)
+
+        return self.cds_segment_lengths
             

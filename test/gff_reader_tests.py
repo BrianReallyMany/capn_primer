@@ -19,10 +19,10 @@ class TestGFFReader(unittest.TestCase):
         'seq\tGeibBase\tCDS\t50\t100\t.\t+\t0\tID=foo-RA:CDS2;Parent=foo-RA\n'+\
         'seq\tGeibBase\tCDS\t120\t180\t.\t+\t0\tID=foo-RA:CDS3;Parent=foo-RA\n')
 
-        self.reader.read(gff)
+        segment_lengths = self.reader.read(gff)
 
         expected = {'foo-RA':[42, 51, 61]}
-        self.assertEqual(self.reader.cds_segment_lengths, expected)
+        self.assertEqual(segment_lengths, expected)
 
 
 ##########################

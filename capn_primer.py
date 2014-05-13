@@ -28,9 +28,10 @@ def main():
     target_fasta_path = 'targets.fasta'
     genome_fasta_path = 'genome.fasta'
     gff_path = 'genome.gff'
+    excluded_primers_path = 'primers_to_exclude.boulder-io'
     options_path = 'primer3_options'
 
-    for path in [target_fasta_path, genome_fasta_path, gff_path, options_path]:
+    for path in [target_fasta_path, genome_fasta_path, gff_path, excluded_primers_path, options_path]:
         verify_path(path)
 
     print("Shiver me timbers, the input files be present. Now I'll be reading them...")
@@ -49,6 +50,12 @@ def main():
     if not gff_reader.cds_segment_lengths:
         print("Yarr! Error reading GFF! Walk the plank.")
         sys.exit()
+
+    boulder_io_reader = BoulderIOReader()
+    with open(excluded_primers_path, 'rb') as exclude_file:
+        primers_to_exclude = boulder_io_reader.read_primer3_output(exclude_file)
+    if not primers_to_exclude:
+        print("Yarr! Error reading excluded primers file. Walk the plank.")
 
     primer3_options = ""
     with open(options_path, 'rb') as options_file:
