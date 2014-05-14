@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+from collections import namedtuple
+
+BlastHit = namedtuple("BlastHit", "subject_id percent_identity alignment_length subject_start subject_end e_value bit_score")
+
 class BlastResultsHolder: 
 
     def __init__(self):

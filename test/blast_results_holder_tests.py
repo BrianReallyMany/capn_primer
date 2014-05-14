@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 
 import unittest
-from collections import namedtuple
-from src.blast_results_holder import BlastResultsHolder
-
-BlastHit = namedtuple("BlastHit", "subject_id percent_identity alignment_length subject_start subject_end e_value bit_score")
-# Fields: Query id, Subject id, % identity, alignment length, mismatches, gap openings, q. start, q. end, s. start, s. end, e-value, bit score
+from src.blast_results_holder import BlastResultsHolder, BlastHit
 
 class TestBlastResultsHolder(unittest.TestCase):
 

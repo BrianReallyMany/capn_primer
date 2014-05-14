@@ -22,9 +22,11 @@ comp24970_c0_seq1_primer0	scaffold00134	100.00	17	0	0	16	32	410149	410165	0.61	3
 """)
 
     def test_parse(self):
-        #results_holder = self.parser.parse(self.input_data)
-        #self.assertTrue(results_holder)
-        pass
+        results_holder = self.parser.parse(self.input_data)
+        self.assertTrue(results_holder)
+        blast_hits_for_comp24970_etc = results_holder.results["comp24970_c0_seq1_primer0"]
+        third_blast_hit = blast_hits_for_comp24970_etc[2]
+        self.assertEquals(36.2, third_blast_hit.bit_score)
 
 
     
