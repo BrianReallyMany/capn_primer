@@ -10,6 +10,8 @@ import test.boulder_io_formatter_tests
 import test.translator_tests
 import test.boulder_io_reader_tests
 import test.primer_tests
+import test.blast_output_parser_tests
+import test.blast_results_holder_tests
 
 # get suites from test modules
 suites = [
@@ -20,7 +22,9 @@ test.dependency_checker_tests.suite(),\
 test.boulder_io_formatter_tests.suite(),\
 test.translator_tests.suite(),\
 test.boulder_io_reader_tests.suite(),\
-test.primer_tests.suite()\
+test.primer_tests.suite(),\
+test.blast_output_parser_tests.suite(),\
+test.blast_results_holder_tests.suite()\
 ]
 
 # collect suites in a TestSuite object
