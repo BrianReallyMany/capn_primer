@@ -71,7 +71,7 @@ PRIMER_PAIR_1_PRODUCT_SIZE=133
 """
         primers = self.reader.entry_to_primers(entry)
         self.assertEquals(len(primers), 2)
-        self.assertEquals(primers[1].left_start, '744')
+        self.assertEquals(primers[1].left_start, 744)
 
 
 ##########################

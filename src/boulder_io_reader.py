@@ -30,8 +30,8 @@ class BoulderIOReader:
                     current_primer.primer_name = "primer_" + str(number)
                     current_primer.target_sequence = target_sequence
                     start_and_length = splitline[1].split(',')
-                    start = start_and_length[0]
-                    length = start_and_length[1]
+                    start = int(start_and_length[0])
+                    length = int(start_and_length[1])
                     current_primer.left_start = start
                     current_primer.left_length = length
             elif "PRIMER_RIGHT" in splitline[0]:
@@ -39,8 +39,8 @@ class BoulderIOReader:
                 m = re.search('[0-9]+$', splitline[0])
                 if m:
                     start_and_length = splitline[1].split(',')
-                    start = start_and_length[0]
-                    length = start_and_length[1]
+                    start = int(start_and_length[0])
+                    length = int(start_and_length[1])
                     current_primer.right_start = start
                     current_primer.right_length = length
                     # At this point we should have a complete primer

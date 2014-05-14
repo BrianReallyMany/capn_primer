@@ -27,7 +27,7 @@ class Primer:
         self.right_length = right_length
 
     def left_primer_to_fasta(self):
-        result = self.target_sequence.header + "_"
+        result = ">" + self.target_sequence.header + "_"
         result += self.primer_name + "_"
         result += "left\n"
         start = self.left_start + 1  # sequence.get_subseq is 1-based, not 0-based
@@ -37,7 +37,7 @@ class Primer:
         return result
 
     def right_primer_to_fasta(self):
-        result = self.target_sequence.header + "_"
+        result = ">" + self.target_sequence.header + "_"
         result += self.primer_name + "_"
         result += "right\n"
         stop = self.right_start + 1  # confusingly enough; right primer is reversed
@@ -48,7 +48,7 @@ class Primer:
         return result
 
     def product_to_fasta(self):
-        result = self.target_sequence.header + "_"
+        result = ">" + self.target_sequence.header + "_"
         result += self.primer_name + "_"
         result += "product\n"
         start = self.left_start + 1

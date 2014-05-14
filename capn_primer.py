@@ -37,6 +37,7 @@ def main():
     print("Shiver me timbers, the input files be present. Now I'll be reading them...")
 
     # Read files
+    print("Reading the scurvy " + target_fasta_path + " file...")
     fasta_reader = FastaReader()
     with open(target_fasta_path, 'rb') as target_file:
         target_seqs = fasta_reader.read(target_file)
@@ -45,6 +46,7 @@ def main():
         sys.exit()
 
     gff_reader = GFFReader()
+    print("Reading the scurvy " + gff_path + " file...")
     with open(gff_path, 'rb') as gff_file:
         cds_segment_lengths = gff_reader.read(gff_file)
     if not cds_segment_lengths:
@@ -52,12 +54,14 @@ def main():
         sys.exit()
 
     boulder_io_reader = BoulderIOReader()
+    print("Reading the scurvy " + excluded_primers_path + " file...")
     with open(excluded_primers_path, 'rb') as exclude_file:
         primers_to_exclude = boulder_io_reader.read_primer3_output(exclude_file)
     if not primers_to_exclude:
         print("Yarr! Error reading excluded primers file. Walk the plank.")
 
     primer3_options = ""
+    print("Reading the scurvy " + options_path + " file...")
     with open(options_path, 'rb') as options_file:
         for line in options_file:
             primer3_options += line
@@ -66,8 +70,10 @@ def main():
     print("got " + str(len(cds_segment_lengths)) + " mrnas")
 
     # Prepare input for primer3_core
+    print("Yarr! Preparing input for primer3_core...")
     boulder_formatter = BoulderIOFormatter()
     boulder_formatter.segment_lengths = cds_segment_lengths
+    print("Yarr! Writing input file for primer3_core...")
     with open("target_seqs.boulder-io", "wb") as boulderfile:
         # write config data first
         boulderfile.write(primer3_options)
@@ -80,14 +86,17 @@ def main():
             exclude_entries[:] = []
     
     # Run primer3_core
+    print("Yarr! Running primer3_core!")
     os.system("primer3_core < target_seqs.boulder-io > primers.boulder-io")
+    print("Yarr! Ran primer3_core!")
     
     # Verify 
     if file_is_empty("primers.boulder-io"):
         print("Yarr! No output from primer3_core! Walk the plank.")
         sys.exit()
     
-    # Convert primers.boulder-io file to left and right primer seqs, then write to fasta
+    # Read primers from file
+    print("Yarr! Reading output from primer3_core!")
     with open("primers.boulder-io", "rb") as primersfile:
         primers = boulder_io_reader.read_primer3_output(primersfile)
 
@@ -96,6 +105,17 @@ def main():
         print("Yarr! No primers in the scurvy primers.boulder-io file! Walk the plank.")
         sys.exit()
 
+    print("Yarr! We got " + str(len(primers)) + " scurvy primers!")
+
+    # Convert primers.boulder-io file to left and right primer seqs, then write to fasta
+    print("Yarr! Making scurvy fasta files of the left and right primers from the" +
+            " primer3_core output. Shiver me timbers!")
+    # TODO 
+    with open("left_right_primers.fasta", "wb") as primersfasta:
+        for primer in primers:
+            primersfasta.write(primer.left_primer_to_fasta())
+            primersfasta.write(primer.right_primer_to_fasta())
+    
     # BLAST PRIMER SEQUENCES AGAINST GENOME TO MAKE SURE THEY ONLY AMPLIFY ONE REGION
         # blast left primers and right primers
         # filter hits for each using e-value and alignment length cutoffs
@@ -126,7 +146,7 @@ def verify_path(path):
         sys.exit()
 
 def file_is_empty(path):
-    return os.stat("file")[6] == 0
+    return os.stat(path)[6] == 0
 
 if __name__ == '__main__':
     main()

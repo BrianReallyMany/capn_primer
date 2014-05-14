@@ -14,15 +14,15 @@ class TestPrimer(unittest.TestCase):
         # right primer is reverse complement of "TTAC" => "GTAA"
 
     def test_left_primer_to_fasta(self):
-        expected = "foo_seq_primer1_left\nTTA\n"
+        expected = ">foo_seq_primer1_left\nTTA\n"
         self.assertEquals(self.primer1.left_primer_to_fasta(), expected)
 
     def test_right_primer_to_fasta(self):
-        expected = "foo_seq_primer1_right\nGTAA\n"
+        expected = ">foo_seq_primer1_right\nGTAA\n"
         self.assertEquals(self.primer1.right_primer_to_fasta(), expected)
 
     def test_product_to_fasta(self):
-        expected = "foo_seq_primer1_product\nTTACAGATTAC\n"
+        expected = ">foo_seq_primer1_product\nTTACAGATTAC\n"
         self.assertEquals(self.primer1.product_to_fasta(), expected)
 
     def test_to_excluded_region_entry(self):
