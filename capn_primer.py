@@ -35,7 +35,7 @@ def main():
     for path in [target_fasta_path, genome_fasta_path, gff_path, excluded_primers_path, options_path]:
         verify_path(path)
 
-    print("Shiver me timbers, the input files be present. Now I'll be reading them...")
+    print("Shiver me timbers, the input files be present. Now I'll be reading them. Savvy?")
 
     # Read files
     print("Reading the scurvy " + target_fasta_path + " file...")
