@@ -159,9 +159,24 @@ def main():
     blast_results.filter_results(MAX_E_VALUE, MIN_ALIGNMENT_LENGTH)
     print("Yarr! Now we got " + str(blast_results.number_of_hits()) + " hits!")
 
-    # verify that for a given primer, the left and right each map to exactly one common region in the genome
+    # Verify that for a given primer, the left and right each map to exactly one common region in the genome
+    one_match_primers = []
+    for primer in primers:
+        left_primer_name = primer.target_sequence.header
+        left_primer_name += "_" + primer.primer_name + "_left"
+        right_primer_name = primer.target_sequence.header
+        right_primer_name += "_" + primer.primer_name + "_right"
+        if blast_results.number_of_common_hits(left_primer_name, right_primer_name) == 1:
+            one_match_primers.append(primer)
+    print("Yarr! There be " + str(len(one_match_primers)) + " one-match primers. Yarr!")
     # TODO check that it's the right region????
-    # discard primers where the left/right both mapped to 0 or >=2 regions
+
+    # Write those primers to a file or two
+    with open("verified_primers.fasta", "wb") as primfasta:
+        for primer in one_match_primers:
+            #TODO
+            pass
+
         
 
 def verify_path(path):

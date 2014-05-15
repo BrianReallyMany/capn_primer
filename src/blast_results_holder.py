@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 from collections import namedtuple
 
 BlastHit = namedtuple("BlastHit", "subject_id percent_identity alignment_length subject_start subject_end e_value bit_score")
@@ -36,7 +37,8 @@ class BlastResultsHolder:
         common_hits = 0
         if query1 not in self.results or query2 not in self.results:
             sys.stderr.write("BlastResultsHolder.number_of_common_hits KeyError -- ")
-            sys.stderr.write("one of these query ids not valid: " + query1 + ", " + query2)
+            sys.stderr.write("one of these query ids not valid: " + query1)
+            sys.stderr.write(", " + query2 + "\n")
             return 0
         query1_hits = self.results[query1]
         query2_hits = self.results[query2]
