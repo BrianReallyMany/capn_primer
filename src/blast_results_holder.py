@@ -34,4 +34,22 @@ class BlastResultsHolder:
 
     def number_of_common_hits(self, query1, query2):
         common_hits = 0
+        if query1 not in self.results or query2 not in self.results:
+            sys.stderr.write("BlastResultsHolder.number_of_common_hits KeyError -- ")
+            sys.stderr.write("one of these query ids not valid: " + query1 + ", " + query2)
+            return 0
+        query1_hits = self.results[query1]
+        query2_hits = self.results[query2]
+        for q1_hit in query1_hits:
+            for q2_hit in query2_hits:
+                if self.close_enough(q1_hit, q2_hit):
+                    common_hits += 1
         return common_hits
+
+    def close_enough(self, hit1, hit2):
+        if hit1.subject_id != hit2.subject_id:
+            return False
+        if abs(hit1.subject_start - hit2.subject_start) > self.MAX_PRODUCT_LENGTH:
+            return False
+        return True
+

@@ -65,9 +65,27 @@ class TestBlastResultsHolder(unittest.TestCase):
         # Here's a right primer hit on the same seq as the left primer hit, but it's thousands of
         #  bases away. No match!
 
-    def test_number_of_common_hits(self):
+    def test_number_of_common_hits_zero(self):
         self.setup_results_with_no_common_hits()
         self.assertEquals(0, self.holder.number_of_common_hits("primer_left", "primer_right"))
+
+    def setup_results_with_one_common_hit(self):
+        self.setup_results_with_no_common_hits()
+        result = BlastHit("foo_seq", 100, 23, 150, 172, 2e-04, 40) # close to primer_left result1
+        self.holder.add_result("primer_right", result)
+
+    def test_number_of_common_hits_one(self):
+        self.setup_results_with_one_common_hit()
+        self.assertEquals(1, self.holder.number_of_common_hits("primer_left", "primer_right"))
+
+    def setup_results_with_two_common_hits(self):
+        self.setup_results_with_one_common_hit()
+        result = BlastHit("bar_seq", 100, 23, 80, 102, 2e-04, 40) # close to primer_right result2
+        self.holder.add_result("primer_left", result)
+
+    def test_number_of_common_hits_two(self):
+        self.setup_results_with_two_common_hits()
+        self.assertEquals(2, self.holder.number_of_common_hits("primer_left", "primer_right"))
 
 
 ##########################
