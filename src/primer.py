@@ -29,22 +29,16 @@ class Primer:
     def to_fasta(self):
         result = ">" + self.target_sequence.header + "_"
         result += self.primer_name + "\n"
-        l_start = self.left_start + 1  # sequence.get_subseq is 1-based, not 0-based
-        l_stop = l_start + self.left_length - 1
-        result += self.target_sequence.get_subseq(l_start, l_stop)
-        r_stop = self.right_start + 1  # confusingly enough; right primer is reversed
-        r_start = r_stop - self.right_length + 1
-        subseq = self.target_sequence.get_subseq(r_start, r_stop)
-        result += reverse_complement(subseq) + "\n"
+        result += self.get_left_primer_sequence()
+        result += self.get_right_primer_sequence()
+        result += "\n"
         return result
 
     def left_primer_to_fasta(self):
         result = ">" + self.target_sequence.header + "_"
         result += self.primer_name + "_"
         result += "left\n"
-        start = self.left_start + 1  # sequence.get_subseq is 1-based, not 0-based
-        stop = start + self.left_length - 1
-        result += self.target_sequence.get_subseq(start, stop)
+        result += self.get_left_primer_sequence()
         result += "\n"
         return result
 
@@ -52,10 +46,7 @@ class Primer:
         result = ">" + self.target_sequence.header + "_"
         result += self.primer_name + "_"
         result += "right\n"
-        stop = self.right_start + 1  # confusingly enough; right primer is reversed
-        start = stop - self.right_length + 1
-        subseq = self.target_sequence.get_subseq(start, stop)
-        result += reverse_complement(subseq)
+        result += self.get_right_primer_sequence()
         result += "\n"
         return result
 
@@ -76,4 +67,21 @@ class Primer:
         result += str(length) + "\n"
         return result
 
+    def to_table(self):
+        result = self.primer_name + "\t"
+        result += self.target_sequence.header + "\t"
+        # TODO
+        result += "TTA\tGTAA\tTTACAGATTAC\n" 
+        return result
 
+    def get_left_primer_sequence(self):
+        start = self.left_start + 1  # sequence.get_subseq is 1-based, not 0-based
+        stop = start + self.left_length - 1
+        seq = self.target_sequence.get_subseq(start, stop)
+        return seq
+        
+    def get_right_primer_sequence(self):
+        stop = self.right_start + 1  # confusingly enough; right primer is reversed
+        start = stop - self.right_length + 1
+        subseq = self.target_sequence.get_subseq(start, stop)
+        return reverse_complement(subseq)

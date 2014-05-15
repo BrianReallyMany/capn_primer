@@ -34,6 +34,10 @@ class TestPrimer(unittest.TestCase):
         expected += "TTAGTAA\n"
         self.assertEquals(self.primer1.to_fasta(), expected)
 
+    def test_to_tsv(self):
+        expected = "primer1\tfoo_seq\tTTA\tGTAA\tTTACAGATTAC\n"
+        self.assertEquals(self.primer1.to_table(), expected)
+
 
 ##########################
 def suite():
