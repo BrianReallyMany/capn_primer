@@ -4,6 +4,7 @@
 import sys
 import subprocess
 import os
+import random
 from src.dependency_checker import check_dependencies
 from src.fasta_reader import FastaReader
 from src.gff_reader import GFFReader
@@ -43,7 +44,7 @@ def main():
     with open(target_fasta_path, 'rb') as target_file:
         target_seqs = fasta_reader.read(target_file)
     if not target_seqs:
-        print("Yarr! Error reading target fasta. Walk the plank.")
+        print("Yarr! Error reading target fasta. Walk the plank. " + random_insult() + "\n")
         sys.exit()
 
     gff_reader = GFFReader()
@@ -51,7 +52,7 @@ def main():
     with open(gff_path, 'rb') as gff_file:
         cds_segment_lengths = gff_reader.read(gff_file)
     if not cds_segment_lengths:
-        print("Yarr! Error reading GFF! Walk the plank.")
+        print("Yarr! Error reading GFF! Walk the plank. " + random_insult() + "\n")
         sys.exit()
 
     boulder_io_reader = BoulderIOReader()
@@ -59,7 +60,7 @@ def main():
     with open(excluded_primers_path, 'rb') as exclude_file:
         primers_to_exclude = boulder_io_reader.read_primer3_output(exclude_file)
     if not primers_to_exclude:
-        print("Yarr! Error reading excluded primers file. Walk the plank.")
+        print("Yarr! Error reading excluded primers file. Walk the plank. " + random_insult() + "\n")
 
     primer3_options = ""
     print("Reading the scurvy " + options_path + " file...")
@@ -92,7 +93,7 @@ def main():
     
     # Verify 
     if file_is_empty("primers.boulder-io"):
-        print("Yarr! No output from primer3_core! Walk the plank.")
+        print("Yarr! No output from primer3_core! Walk the plank. " + random_insult() + "\n")
         sys.exit()
     
     # Read primers from file
@@ -102,7 +103,7 @@ def main():
 
     # Verify again, just for fun
     if not primers:
-        print("Yarr! No primers in the scurvy primers.boulder-io file! Walk the plank.")
+        print("Yarr! No primers in the scurvy primers.boulder-io file! Walk the plank. " + random_insult() + "\n")
         sys.exit()
 
     print("Yarr! We got " + str(len(primers)) + " scurvy primers!")
@@ -117,7 +118,7 @@ def main():
 
     # Verify that file was written
     if file_is_empty("left_right_primers.fasta"):
-        print("Yarr! Left and right primers failed to write! Walk the plank.")
+        print("Yarr! Left and right primers failed to write! Walk the plank. " + random_insult() + "\n")
         sys.exit()
 
     
@@ -127,7 +128,7 @@ def main():
     os.system("makeblastdb -in genome.fasta -dbtype nucl > /dev/null")
     # Verify that the database was created
     if file_is_empty("genome.fasta.nhr"):
-        print("Yarr! Database wasn't created. Walk the plank.")
+        print("Yarr! Database wasn't created. Walk the plank. " + random_insult() + "\n")
         sys.exit()
 
     print("Yarr! Running blast on those scurvy left and right primers...")
@@ -136,7 +137,7 @@ def main():
     
     # Verify that blast produced results
     if file_is_empty("left_right_primers.blastout"):
-        print("Yarr! No output from blast! Walk the plank.")
+        print("Yarr! No output from blast! Walk the plank. " + random_insult() + "\n")
         sys.exit()
 
     print("Yarr! Blast finished running.")
@@ -147,7 +148,7 @@ def main():
         blast_results = blast_parser.parse(blastout)
 
     if not blast_results or blast_results.number_of_hits == 0:
-        print("Yarr! Scurvy error reading blast results. Walk the plank.")
+        print("Yarr! Scurvy error reading blast results. Walk the plank. " + random_insult() + "\n")
         sys.exit()
     
     print("Yarr! We got " + str(blast_results.number_of_hits()) + " hits!")
@@ -165,11 +166,18 @@ def main():
 
 def verify_path(path):
     if not os.path.isfile(path):
-        sys.stderr.write("Failed to find " + path + ". Walk the plank.\n")
+        sys.stderr.write("Failed to find " + path + ". Walk the plank. " + random_insult() + "\n")
         sys.exit()
 
 def file_is_empty(path):
     return os.stat(path)[6] == 0
+
+def random_insult():
+    insults = ["Ye scurvy dog.", "You son of a biscuit eater.", "Doubloons!",
+            "You must be three sheets to the wind.", "Pegleg!"]
+    return insults[random.randint(0, len(insults)-1)]
+
+#####################################################################################
 
 if __name__ == '__main__':
     main()
