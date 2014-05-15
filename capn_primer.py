@@ -4,13 +4,14 @@
 import sys
 import subprocess
 import os
-from src.dependency_checker import primer3_core_is_installed, blastall_is_installed
+from src.dependency_checker import check_dependencies
 from src.fasta_reader import FastaReader
 from src.gff_reader import GFFReader
 from src.boulder_io_formatter import BoulderIOFormatter
 from src.boulder_io_reader import BoulderIOReader
+from src.blast_output_parser import BlastOutputParser
 
-## DEPENDENCIES: primer3_core, blast (?)
+## DEPENDENCIES: primer3_core, blastall, makeblastdb
 ## input: fasta containing mrna_ids and CDS 
 ##        gff for genome from which fasta is pulled
 
@@ -66,8 +67,7 @@ def main():
         for line in options_file:
             primer3_options += line
 
-    print("got " + str(len(target_seqs)) + " target seqs.")
-    print("got " + str(len(cds_segment_lengths)) + " mrnas")
+    print("")
 
     # Prepare input for primer3_core
     print("Yarr! Preparing input for primer3_core...")
@@ -110,35 +110,58 @@ def main():
     # Convert primers.boulder-io file to left and right primer seqs, then write to fasta
     print("Yarr! Making scurvy fasta files of the left and right primers from the" +
             " primer3_core output. Shiver me timbers!")
-    # TODO 
     with open("left_right_primers.fasta", "wb") as primersfasta:
         for primer in primers:
             primersfasta.write(primer.left_primer_to_fasta())
             primersfasta.write(primer.right_primer_to_fasta())
+
+    # Verify that file was written
+    if file_is_empty("left_right_primers.fasta"):
+        print("Yarr! Left and right primers failed to write! Walk the plank.")
+        sys.exit()
+
     
     # BLAST PRIMER SEQUENCES AGAINST GENOME TO MAKE SURE THEY ONLY AMPLIFY ONE REGION
-        # blast left primers and right primers
-        # filter hits for each using e-value and alignment length cutoffs
-        # verify that for a given primer, the left and right each map to exactly one common region in the genome
-        # TODO check that it's the right region????
-        # discard primers where the left/right both mapped to 0 or >=2 regions
-        # blastall -p blastn -d 454Scaffolds.fna -i primers_to_blast.fasta -r 1 -q 1 -G 1 -E 2 -W 9 -F "m D" -U -m 9 -b 4 > ../../BLAST_OUTPUT/primers_against_genome.blastout
+    print("Yarr! Preparing blast database!")
+    # makeblastdb -in Bdor.Trinity.reallyfiltered.fasta -dbtype nucl
+    os.system("makeblastdb -in genome.fasta -dbtype nucl > /dev/null")
+    # Verify that the database was created
+    if file_is_empty("genome.fasta.nhr"):
+        print("Yarr! Database wasn't created. Walk the plank.")
+        sys.exit()
+
+    print("Yarr! Running blast on those scurvy left and right primers...")
+    os.system('blastall -p blastn -d genome.fasta -i left_right_primers.fasta '+
+                '-r 1 -q 1 -G 1 -E 2 -W 9 -F "m D" -U -m 9 -b 4 > left_right_primers.blastout')
+    
+    # Verify that blast produced results
+    if file_is_empty("left_right_primers.blastout"):
+        print("Yarr! No output from blast! Walk the plank.")
+        sys.exit()
+
+    print("Yarr! Blast finished running.")
+
+    # Read in blast output
+    blast_parser = BlastOutputParser()
+    with open("left_right_primers.blastout", "rb") as blastout:
+        blast_results = blast_parser.parse(blastout)
+
+    if not blast_results or blast_results.number_of_hits == 0:
+        print("Yarr! Scurvy error reading blast results. Walk the plank.")
+        sys.exit()
+    
+    print("Yarr! We got " + str(blast_results.number_of_hits()) + " hits!")
+    print("Yarr! Time to filter these scurvy blast hits.")
+    # filter hits for each using e-value and alignment length cutoffs
+    MAX_E_VALUE = 0.5
+    MIN_ALIGNMENT_LENGTH = 16
+    blast_results.filter_results(MAX_E_VALUE, MIN_ALIGNMENT_LENGTH)
+    print("Yarr! Now we got " + str(blast_results.number_of_hits()) + " hits!")
+
+    # verify that for a given primer, the left and right each map to exactly one common region in the genome
+    # TODO check that it's the right region????
+    # discard primers where the left/right both mapped to 0 or >=2 regions
         
-
-def check_dependencies():
-    # check primer3_core
-    if primer3_core_is_installed():
-        print("...Yarr! primer3_core be installed.")
-    else:
-        print("Yarr! Why ye not install primer3_core, scurvy dog.")
-        sys.exit()
-
-    # check blastall
-    if blastall_is_installed():
-        print("...Yarr! blastall be installed.\n")
-    else:
-        print("Yarr! Why ye not install blastall, scurvy dog.")
-        sys.exit()
 
 def verify_path(path):
     if not os.path.isfile(path):
