@@ -171,13 +171,30 @@ def main():
     print("Yarr! There be " + str(len(one_match_primers)) + " one-match primers. Yarr!")
     # TODO check that it's the right region????
 
-    # Write those primers to a file or two
+    # Write those primers to fasta
     with open("verified_primers.fasta", "wb") as primfasta:
         for primer in one_match_primers:
-            #TODO
-            pass
-
+            primfasta.write(primer.to_fasta())
         
+    # Verify that fasta
+    if file_is_empty("verified_primers.fasta"):
+        print("Yarr! Failed to write verified primers to fasta! Walk the plank. " + random_insult() + "\n")
+        sys.exit()
+
+    print("Yarr! Wrote verified primers to fasta.")
+
+    # Write those primers to a tsv
+    write_primer_table("verified_primers.tsv", one_match_primers)
+
+    # Verify that tsv
+    if file_is_empty("verified_primers.tsv"):
+        print("Yarr! Failed to write verified primers to tsv! Walk the plank. " + random_insult() + "\n")
+        sys.exit()
+
+    print("Yarr! Wrote verified primers to tsv.")
+
+    ### THE END ###
+
 
 def verify_path(path):
     if not os.path.isfile(path):
@@ -188,9 +205,15 @@ def file_is_empty(path):
     return os.stat(path)[6] == 0
 
 def random_insult():
-    insults = ["Ye scurvy dog.", "You son of a biscuit eater.", "Doubloons!",
+    insults = ["Scalawag!", "Ye scurvy dog.", "You son of a biscuit eater.", "Doubloons!",
             "You must be three sheets to the wind.", "Pegleg!"]
     return insults[random.randint(0, len(insults)-1)]
+
+def write_primer_table(filename, primers):
+    with open(filename, "wb") as primtsv:
+        primtsv.write("PRIMER_NAME\tTARGET_SEQUENCE\tLEFT_PRIMER\tRIGHT_PRIMER\tPRODUCT\n")
+        for primer in primers:
+            primtsv.write(primer.to_table())
 
 #####################################################################################
 
