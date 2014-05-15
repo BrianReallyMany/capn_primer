@@ -6,6 +6,9 @@ BlastHit = namedtuple("BlastHit", "subject_id percent_identity alignment_length 
 
 class BlastResultsHolder: 
 
+    # Any primers closer than this on the same seq will be considered a "match"
+    MAX_PRODUCT_LENGTH = 1000 
+
     def __init__(self):
         self.results = {}
 
@@ -28,3 +31,7 @@ class BlastResultsHolder:
                     h.e_value < max_e_value and 
                     h.alignment_length > min_alignment_length]
             # 3-line list comprehension ?= ugly
+
+    def number_of_common_hits(self, query1, query2):
+        common_hits = 0
+        return common_hits
