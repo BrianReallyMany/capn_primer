@@ -54,9 +54,7 @@ class Primer:
         result = ">" + self.target_sequence.header + "_"
         result += self.primer_name + "_"
         result += "product\n"
-        start = self.left_start + 1
-        stop = self.right_start + 1
-        result += self.target_sequence.get_subseq(start, stop)
+        result += self.get_product_sequence()
         result += "\n"
         return result
 
@@ -70,8 +68,9 @@ class Primer:
     def to_table(self):
         result = self.primer_name + "\t"
         result += self.target_sequence.header + "\t"
-        # TODO
-        result += "TTA\tGTAA\tTTACAGATTAC\n" 
+        result += self.get_left_primer_sequence() + "\t"
+        result += self.get_right_primer_sequence() + "\t"
+        result += self.get_product_sequence() + "\n"
         return result
 
     def get_left_primer_sequence(self):
@@ -85,3 +84,9 @@ class Primer:
         start = stop - self.right_length + 1
         subseq = self.target_sequence.get_subseq(start, stop)
         return reverse_complement(subseq)
+
+    def get_product_sequence(self):
+        start = self.left_start + 1
+        stop = self.right_start + 1
+        result = self.target_sequence.get_subseq(start, stop)
+        return result
