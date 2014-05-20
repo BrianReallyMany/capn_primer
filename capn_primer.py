@@ -33,7 +33,7 @@ def main():
     excluded_primers_path = 'primers_to_exclude.boulder-io'
     options_path = 'primer3_options'
 
-    for path in [target_fasta_path, genome_fasta_path, gff_path, excluded_primers_path, options_path]:
+    for path in [target_fasta_path, genome_fasta_path, excluded_primers_path, options_path]:
         verify_path(path)
 
     print("Shiver me timbers, the input files be present. Now I'll be reading them. Savvy?")
@@ -47,13 +47,14 @@ def main():
         print("Yarr! Error reading target fasta. Walk the plank. " + random_insult() + "\n")
         sys.exit()
 
-    gff_reader = GFFReader()
-    print("Reading the scurvy " + gff_path + " file...")
-    with open(gff_path, 'rb') as gff_file:
-        cds_segment_lengths = gff_reader.read(gff_file)
-    if not cds_segment_lengths:
-        print("Yarr! Error reading GFF! Walk the plank. " + random_insult() + "\n")
-        sys.exit()
+    if verify_path(gff_path):
+        gff_reader = GFFReader()
+        print("Reading the scurvy " + gff_path + " file...")
+        with open(gff_path, 'rb') as gff_file:
+            cds_segment_lengths = gff_reader.read(gff_file)
+        if not cds_segment_lengths:
+            print("Yarr! Error reading GFF! Walk the plank. " + random_insult() + "\n")
+            sys.exit()
 
     boulder_io_reader = BoulderIOReader()
     print("Reading the scurvy " + excluded_primers_path + " file...")
