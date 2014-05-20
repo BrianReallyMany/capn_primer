@@ -34,7 +34,9 @@ def main():
     options_path = 'primer3_options'
 
     for path in [target_fasta_path, genome_fasta_path, excluded_primers_path, options_path]:
-        verify_path(path)
+        found_it = verify_path(path)
+        if not found_it:
+            exit()
 
     print("Shiver me timbers, the input files be present. Now I'll be reading them. Savvy?")
 
@@ -47,6 +49,7 @@ def main():
         print("Yarr! Error reading target fasta. Walk the plank. " + random_insult() + "\n")
         sys.exit()
 
+    cds_segment_lengths = None
     if verify_path(gff_path):
         gff_reader = GFFReader()
         print("Reading the scurvy " + gff_path + " file...")
@@ -74,7 +77,8 @@ def main():
     # Prepare input for primer3_core
     print("Yarr! Preparing input for primer3_core...")
     boulder_formatter = BoulderIOFormatter()
-    boulder_formatter.segment_lengths = cds_segment_lengths
+    if cds_segment_lengths:
+        boulder_formatter.segment_lengths = cds_segment_lengths
     print("Yarr! Writing input file for primer3_core...")
     with open("target_seqs.boulder-io", "wb") as boulderfile:
         # write config data first
@@ -200,7 +204,8 @@ def main():
 def verify_path(path):
     if not os.path.isfile(path):
         sys.stderr.write("Failed to find " + path + ". Walk the plank. " + random_insult() + "\n")
-        sys.exit()
+        return False
+    return True
 
 def file_is_empty(path):
     return os.stat(path)[6] == 0
