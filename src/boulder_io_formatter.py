@@ -16,19 +16,14 @@ class BoulderIOFormatter:
         If optional excluded_region_entry argument is passed,
         appends these entries to the output.
         """
-        if not self.segment_lengths:
-            sys.stderr.write("BoulderIOFormatter: attempt to format seq without segment lengths dictionary.\n")
-            return ""
-        if seq.header not in self.segment_lengths.keys():
-            sys.stderr.write("BoulderIOFormatter: seq header not found in segment lengths dictionary -- " + seq.header + "\n")
-            return ""
         result = "SEQUENCE_ID=" + seq.header + "\n"
         result += "SEQUENCE_TEMPLATE=" + seq.bases + "\n"
-        lengths = self.segment_lengths[seq.header]
-        total_length = 0
-        for length in lengths[:-1]:
-            total_length += length
-            result += "SEQUENCE_TARGET=" + str(total_length) + ",1\n"
+        if self.segment_lengths:
+            lengths = self.segment_lengths[seq.header]
+            total_length = 0
+            for length in lengths[:-1]:
+                total_length += length
+                result += "SEQUENCE_TARGET=" + str(total_length) + ",1\n"
         if excluded_region_entries:
             for entry in excluded_region_entries:
                 result += entry
