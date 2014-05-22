@@ -46,7 +46,6 @@ class BlastResultsHolder:
             for q2_hit in query2_hits:
                 if self.close_enough(q1_hit, q2_hit):
                     common_hits += 1
-        print("number of common hits between " + query1 + " and " + query2 + ": " + str(common_hits))
         return common_hits
 
     def close_enough(self, hit1, hit2):
