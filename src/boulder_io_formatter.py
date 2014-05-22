@@ -18,7 +18,7 @@ class BoulderIOFormatter:
         """
         result = "SEQUENCE_ID=" + seq.header + "\n"
         result += "SEQUENCE_TEMPLATE=" + seq.bases + "\n"
-        if self.segment_lengths:
+        if self.segment_lengths and seq.header in self.segment_lengths:
             lengths = self.segment_lengths[seq.header]
             total_length = 0
             for length in lengths[:-1]:

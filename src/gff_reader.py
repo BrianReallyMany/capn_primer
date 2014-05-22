@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import sys
+
 def parse_gff_attributes(attr):
     attr = attr.strip(' \t\n;').split(';') # Sanitize and split
     key_vals = [a.split('=') for a in attr]
@@ -15,7 +17,14 @@ class GFFReader:
         
         # Step 1: iterate through gff, make dictionary entries for mRNAs, store CDS for later
         for line in io_buffer:        
+            if line.startswith("#"):
+                continue
             columns = line.split('\t')
+            if len(columns) != 9:
+                # GFF used for testing contains an entire fasta inside,
+                # line breaks in seqs and all. So printing to stderr or
+                # raising exceptions is not an option here; we just try to recover
+                continue
             attr = parse_gff_attributes(columns[8])
             if columns[2] == 'mRNA':
                 self.cds_segment_lengths[attr['ID']] = []

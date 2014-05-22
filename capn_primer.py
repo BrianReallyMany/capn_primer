@@ -159,8 +159,8 @@ def main():
     print("Yarr! We got " + str(blast_results.number_of_hits()) + " hits!")
     print("Yarr! Time to filter these scurvy blast hits.")
     # filter hits for each using e-value and alignment length cutoffs
-    MAX_E_VALUE = 0.5
-    MIN_ALIGNMENT_LENGTH = 16
+    MAX_E_VALUE = 1.0
+    MIN_ALIGNMENT_LENGTH = 12
     blast_results.filter_results(MAX_E_VALUE, MIN_ALIGNMENT_LENGTH)
     print("Yarr! Now we got " + str(blast_results.number_of_hits()) + " hits!")
 

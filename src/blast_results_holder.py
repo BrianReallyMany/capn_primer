@@ -8,7 +8,7 @@ BlastHit = namedtuple("BlastHit", "subject_id percent_identity alignment_length 
 class BlastResultsHolder: 
 
     # Any primers closer than this on the same seq will be considered a "match"
-    MAX_PRODUCT_LENGTH = 1000 
+    MAX_PRODUCT_LENGTH = 400
 
     def __init__(self):
         self.results = {}
@@ -46,6 +46,7 @@ class BlastResultsHolder:
             for q2_hit in query2_hits:
                 if self.close_enough(q1_hit, q2_hit):
                     common_hits += 1
+        print("number of common hits between " + query1 + " and " + query2 + ": " + str(common_hits))
         return common_hits
 
     def close_enough(self, hit1, hit2):
