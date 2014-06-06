@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import copy
 
 def parse_gff_attributes(attr):
     attr = attr.strip(' \t\n;').split(';') # Sanitize and split
@@ -29,7 +30,11 @@ class GFFReader:
             if columns[2] == 'mRNA':
                 self.cds_segment_lengths[attr['ID']] = []
             elif columns[2] == 'CDS':
-                cdss.append([columns, attr])
+                parents = attr["Parent"].split(",")
+                for parent in parents:
+                    attr2 = copy.deepcopy(attr)
+                    attr2["Parent"] = parent
+                    cdss.append([columns, attr2])
         
         # Step 2: Fill dictionary with CDS length values
         for cds in cdss:
