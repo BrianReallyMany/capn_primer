@@ -19,6 +19,10 @@ from src.blast_output_parser import BlastOutputParser
 # TODO primers should not overlap at all with the primers from the last run. wtf
 # so ... need to pass in a list of forbidden zones to primer3_core, or something.
 
+# TODO add these pirate sayings:
+# thar she blows, poop deck, shark bait, batten down the hatches, davy jones' locker,
+# hoist the mizzen
+
 def main():
     print("Yarr! I be Cap'n Primer.\n")
     # Check dependencies
